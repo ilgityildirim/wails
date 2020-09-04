@@ -146,14 +146,20 @@ func BuildDocker(binaryName string, buildMode string, projectOptions *ProjectOpt
 		"-e", "FLAG_RACE=false",
 		"-e", "FLAG_BUILDMODE=default",
 		"-e", "FLAG_TRIMPATH=false",
-		"-e", fmt.Sprintf("TARGETS=%s", projectOptions.Platform+"/"+projectOptions.Architecture),
+		"-e", fmt.Sprintf("TARGETS=%s/%s", projectOptions.Platform, projectOptions.Architecture),
 		"-e", "GOPROXY=",
 		"-e", "GO111MODULE=on",
-		"wailsapp/xgo:latest",
-		".",
 	} {
 		buildCommand.Add(arg)
 	}
+
+	if projectOptions.GoRoot != "" {
+		buildCommand.Add("-v")
+		buildCommand.Add(fmt.Sprintf("%s:/go", projectOptions.GoRoot))
+	}
+
+	buildCommand.Add("wailsapp/xgo:latest")
+	buildCommand.Add(".")
 
 	compileMessage := fmt.Sprintf(
 		"Packing + Compiling project for %s/%s using docker image wailsapp/xgo:latest",
