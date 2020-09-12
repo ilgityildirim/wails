@@ -44,4 +44,6 @@ export function Init() {
 
 	// Do platform specific Init
 	Platform.Init();
+
+	window.wailsloader.runtime = true;
 }
